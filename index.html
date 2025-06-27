@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple To-Do List</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -42,21 +41,21 @@
         </p>
 
         <ul id="todoList" class="space-y-4">
-            <!-- To-do items will be rendered here by JavaScript -->
+            
         </ul>
     </div>
 
-    <!-- Firebase SDKs (Load from CDN) -->
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global variables for Firebase and current user
+       
         let app, db, auth, userId = null;
         let isAuthReady = false;
 
-        // Get DOM elements
+       
         const newTodoInput = document.getElementById('newTodoInput');
         const addTodoButton = document.getElementById('addTodoButton');
         const todoList = document.getElementById('todoList');
@@ -64,16 +63,16 @@
         const currentUserIdSpan = document.getElementById('currentUserId');
         const noTodosMessage = document.getElementById('noTodosMessage');
 
-        // Initialize Firebase on window load
+        
         window.onload = async function() {
             try {
-                // Check if __firebase_config is defined in the environment
+                
                 const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // Authenticate user
+               
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         userId = user.uid;
@@ -84,10 +83,10 @@
                     isAuthReady = true;
                     userIdDisplay.classList.remove('hidden');
                     currentUserIdSpan.textContent = userId;
-                    setupRealtimeListener(); // Start listening for data after auth
+                    setupRealtimeListener(); 
                 });
 
-                // Add event listener for adding new todos
+               
                 addTodoButton.addEventListener('click', addTodo);
                 newTodoInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
@@ -97,11 +96,10 @@
 
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
-                // Potentially show a user-friendly error message on the page
+               
             }
         };
 
-        // Function to set up the real-time listener for todos
         function setupRealtimeListener() {
             if (!db || !userId || !isAuthReady) {
                 console.warn("Firebase or User ID not ready for listener.");
@@ -119,9 +117,9 @@
             });
         }
 
-        // Function to render todos in the UI
+       
         function renderTodos(todos) {
-            todoList.innerHTML = ''; // Clear existing list
+            todoList.innerHTML = ''; 
             if (todos.length === 0) {
                 noTodosMessage.classList.remove('hidden');
             } else {
@@ -154,7 +152,7 @@
                             </svg>
                         </button>
                     `;
-                    // Add event listeners for the current todo item
+                   
                     li.querySelector('input[type="checkbox"]').addEventListener('change', () => toggleComplete(todo.id, todo.completed));
                     li.querySelector('.delete-button').addEventListener('click', () => deleteTodo(todo.id));
                     todoList.appendChild(li);
@@ -162,14 +160,14 @@
             }
         }
 
-        // Function to escape HTML to prevent XSS
+       
         function escapeHTML(str) {
             const div = document.createElement('div');
             div.appendChild(document.createTextNode(str));
             return div.innerHTML;
         }
 
-        // Function to add a new todo
+       
         async function addTodo() {
             const text = newTodoInput.value.trim();
             if (text === '' || !db || !userId) return;
@@ -179,13 +177,13 @@
                     completed: false,
                     createdAt: new Date(),
                 });
-                newTodoInput.value = ''; // Clear input
+                newTodoInput.value = ''; 
             } catch (e) {
                 console.error('Error adding document: ', e);
             }
         }
 
-        // Function to toggle todo completion status
+    
         async function toggleComplete(id, completed) {
             if (!db || !userId) return;
             try {
@@ -198,7 +196,7 @@
             }
         }
 
-        // Function to delete a todo
+       
         async function deleteTodo(id) {
             if (!db || !userId) return;
             try {
